@@ -6,30 +6,39 @@ export default function Contact() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("✅ Mensaje enviado (simulación)");
-    setForm({ name: "", email: "", message: "" });
-  };
-
   return (
     <Container sx={{ mt: 4 }}>
       <Typography variant="h3" gutterBottom>
         Contáctame
       </Typography>
-      <form onSubmit={handleSubmit}>
+
+      {/* Formulario Netlify */}
+      <form 
+        name="contact" 
+        method="POST" 
+        data-netlify="true" 
+        netlify-honeypot="bot-field"
+        onSubmit={(e) => { e.preventDefault(); e.target.submit(); }}
+      >
+        {/* Campo oculto para bots */}
+        <input type="hidden" name="form-name" value="contact" />
+        <input type="hidden" name="bot-field" />
+
         <TextField
           fullWidth label="Nombre" name="name"
           value={form.name} onChange={handleChange} margin="normal"
         />
         <TextField
           fullWidth label="Correo" name="email"
+          type="email"
           value={form.email} onChange={handleChange} margin="normal"
         />
         <TextField
           fullWidth label="Mensaje" name="message"
-          value={form.message} onChange={handleChange} multiline rows={4} margin="normal"
+          multiline rows={4} margin="normal"
+          value={form.message} onChange={handleChange}
         />
+
         <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
           Enviar
         </Button>
