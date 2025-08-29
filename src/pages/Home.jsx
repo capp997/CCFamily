@@ -1,28 +1,22 @@
 import React from "react";
-import { Container, Typography, Button } from "@mui/material";
-import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import Banner from "../components/Banner";
+import { Container, Typography, Box } from "@mui/material";
 
 export default function Home() {
   return (
-    <Container sx={{ textAlign: "center", mt: 5 }}>
-      <motion.div initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }}>
-        <Typography variant="h2" gutterBottom>
-          Bienvenido 🌱
+    <>
+      <Banner />
+      <Container sx={{ mt: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Bienvenido a C&C Family
         </Typography>
-        <Typography variant="h6" gutterBottom>
-          Explora proyectos, contacta y administra desde el dashboard
+        <Typography variant="body1">
+          Descubre nuestros proyectos y servicios de paisajismo y jardinería.
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          to="/projects"
-          sx={{ mt: 2 }}
-        >
-          Ver Proyectos
-        </Button>
-      </motion.div>
-    </Container>
+        <Box sx={{ mt: 4 }}>
+          {/* Aquí puedes agregar secciones de proyectos destacados */}
+        </Box>
+      </Container>
+    </>
   );
 }
