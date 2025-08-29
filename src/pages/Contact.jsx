@@ -17,7 +17,7 @@ export default function Contact() {
         method="POST" 
         data-netlify="true" 
         netlify-honeypot="bot-field"
-        action="/thank-you"  // <-- redirige a la página de gracias
+        action="/thanks.html"  // <-- redirige a la página de gracias
       >
         <input type="hidden" name="form-name" value="contact" />
         <input type="hidden" name="bot-field" />
