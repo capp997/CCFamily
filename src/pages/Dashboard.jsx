@@ -1,29 +1,28 @@
 import React from "react";
-import { Container, Typography, Paper } from "@mui/material";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
+import { Container, Typography } from "@mui/material";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const data = [
-  { name: "Ene", visitas: 30 },
-  { name: "Feb", visitas: 45 },
-  { name: "Mar", visitas: 60 },
-  { name: "Abr", visitas: 80 },
+  { name: "Ene", visitas: 400 },
+  { name: "Feb", visitas: 300 },
+  { name: "Mar", visitas: 500 },
+  { name: "Abr", visitas: 200 },
 ];
 
 export default function Dashboard() {
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h3" gutterBottom>
-        Dashboard 📊
-      </Typography>
-      <Paper sx={{ p: 2 }}>
-        <LineChart width={400} height={250} data={data}>
-          <Line type="monotone" dataKey="visitas" stroke="#1976d2" />
-          <CartesianGrid stroke="#ccc" />
+      <Typography variant="h4" gutterBottom>Dashboard</Typography>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={data} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="visitas" stroke="#4caf50" />
         </LineChart>
-      </Paper>
+      </ResponsiveContainer>
     </Container>
   );
 }
