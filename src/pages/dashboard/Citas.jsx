@@ -1,43 +1,103 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../../firebase";
-import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Box, Typography } from "@mui/material";
+import { db } from "../../firebase"; // asegúrate que db esté exportado
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
+} from "firebase/firestore";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  TextField,
+  Box,
+  Typography
+} from "@mui/material";
 
-export default function Citas() {
-  const [citas, setCitas] = useState([]);
+const Citas = () => {
   const [nombre, setNombre] = useState("");
   const [fecha, setFecha] = useState("");
+  const [citas, setCitas] = useState([]);
 
   const citasCollection = collection(db, "citas");
 
-  const fetchCitas = async () => {
+  // Obtener citas
+  const obtenerCitas = async () => {
     const data = await getDocs(citasCollection);
-    setCitas(data.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+    setCitas(data.docs.map(doc => ({ id: doc.id, ...doc.data() })));
   };
 
-  useEffect(() => { fetchCitas(); }, []);
+  useEffect(() => {
+    obtenerCitas();
+  }, []);
 
-  const agregarCita = async () => {
-    if (!nombre || !fecha) return;
-    await addDoc(citasCollection, { nombre, fecha });
-    setNombre("");
-    setFecha("");
-    fetchCitas();
+  // Agregar cita
+  const agregarCita = async (e) => {
+    e.preventDefault();
+    if (!nombre || !fecha) return alert("Completa todos los campos");
+
+    try {
+      await addDoc(citasCollection, { nombre, fecha });
+      setNombre("");
+      setFecha("");
+      obtenerCitas(); // refresca la lista
+    } catch (err) {
+      console.error(err);
+      alert("Error al agregar la cita");
+    }
   };
 
+  // Eliminar cita
   const eliminarCita = async (id) => {
-    await deleteDoc(doc(db, "citas", id));
-    fetchCitas();
+    try {
+      const citaDoc = doc(db, "citas", id);
+      await deleteDoc(citaDoc);
+      obtenerCitas(); // refresca la lista
+    } catch (err) {
+      console.error(err);
+      alert("Error al eliminar la cita");
+    }
   };
 
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom>Gestión de Citas</Typography>
-      <Box sx={{ mb: 2 }}>
-        <TextField label="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} sx={{ mr: 2 }} />
-        <TextField type="date" label="Fecha" InputLabelProps={{ shrink: true }} value={fecha} onChange={e => setFecha(e.target.value)} sx={{ mr: 2 }} />
-        <Button variant="contained" color="primary" onClick={agregarCita}>Agregar</Button>
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h5" gutterBottom>
+        Agregar Cita
+      </Typography>
+      <Box
+        component="form"
+        onSubmit={agregarCita}
+        sx={{ display: "flex", gap: 2, mb: 4 }}
+      >
+        <TextField
+          label="Nombre"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
+        />
+        <TextField
+          label="Fecha"
+          type="date"
+          value={fecha}
+          onChange={(e) => setFecha(e.target.value)}
+          InputLabelProps={{ shrink: true }}
+          required
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Agregar
+        </Button>
       </Box>
+
+      <Typography variant="h6" gutterBottom>
+        Lista de Citas
+      </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -48,18 +108,8 @@ export default function Citas() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {citas.map(cita => (
+            {citas.map((cita) => (
               <TableRow key={cita.id}>
                 <TableCell>{cita.nombre}</TableCell>
                 <TableCell>{cita.fecha}</TableCell>
-                <TableCell>
-                  <Button variant="contained" color="error" onClick={() => eliminarCita(cita.id)}>Eliminar</Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
-  );
-}
+                <Table
