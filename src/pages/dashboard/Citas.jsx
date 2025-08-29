@@ -112,4 +112,29 @@ const Citas = () => {
               <TableRow key={cita.id}>
                 <TableCell>{cita.nombre}</TableCell>
                 <TableCell>{cita.fecha}</TableCell>
-                <Table
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => eliminarCita(cita.id)}
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+            {citas.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={3} align="center">
+                  No hay citas
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
+  );
+};
+
+export default Citas;
