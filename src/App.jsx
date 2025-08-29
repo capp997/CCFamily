@@ -6,6 +6,7 @@ import Projects from "./pages/Projects";
 import Dashboard from "./pages/Dashboard";
 import { useEffect } from "react";
 import { initGA } from "./analytics";
+import React from "react";
 
 export default function App() {
   useEffect(() => {
