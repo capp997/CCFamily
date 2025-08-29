@@ -1,3 +1,4 @@
+import React from "react";
 import { Typography, Container, Grid, Paper } from "@mui/material";
 
 export default function Dashboard() {
