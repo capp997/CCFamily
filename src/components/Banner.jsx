@@ -23,7 +23,10 @@ export default function Banner() {
     >
       <Typography
         variant="h2"
-        sx={{ fontWeight: "bold", textShadow: "2px 2px 8px rgba(0,0,0,0.3)" }}
+        sx={{
+          fontWeight: "bold",
+          textShadow: "2px 2px 8px rgba(0,0,0,0.3)",
+        }}
       >
         C&C Family
       </Typography>
