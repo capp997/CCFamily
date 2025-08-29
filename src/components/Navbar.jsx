@@ -1,29 +1,86 @@
-import React from "react";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import React, { useState } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Box,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
+      <Typography variant="h6" sx={{ my: 2 }}>
+        C&C Family
+      </Typography>
+      <List>
+        {["Home", "Projects", "Contact", "Dashboard"].map((text) => (
+          <ListItem key={text} disablePadding>
+            <Button
+              component={Link}
+              to={text === "Home" ? "/" : `/${text.toLowerCase()}`}
+              sx={{ width: "100%", justifyContent: "flex-start", padding: 1 }}
+            >
+              <ListItemText primary={text} />
+            </Button>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+
   return (
-    <AppBar position="sticky" color="success" sx={{ mb: 4 }}>
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          C&C Family
-        </Typography>
-        <Box>
-          <Button color="inherit" component={Link} to="/">
-            Home
-          </Button>
-          <Button color="inherit" component={Link} to="/projects">
-            Projects
-          </Button>
-          <Button color="inherit" component={Link} to="/contact">
-            Contact
-          </Button>
-          <Button color="inherit" component={Link} to="/dashboard">
-            Dashboard
-          </Button>
-        </Box>
-      </Toolbar>
-    </AppBar>
+    <>
+      <AppBar position="sticky" color="success">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            C&C Family
+          </Typography>
+          {/* Desktop menu */}
+          <Box sx={{ display: { xs: "none", md: "block" } }}>
+            {["Home", "Projects", "Contact", "Dashboard"].map((text) => (
+              <Button
+                key={text}
+                color="inherit"
+                component={Link}
+                to={text === "Home" ? "/" : `/${text.toLowerCase()}`}
+              >
+                {text}
+              </Button>
+            ))}
+          </Box>
+          {/* Mobile menu button */}
+          <IconButton
+            color="inherit"
+            edge="end"
+            sx={{ display: { md: "none" } }}
+            onClick={handleDrawerToggle}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        sx={{ display: { xs: "block", md: "none" } }}
+      >
+        {drawer}
+      </Drawer>
+    </>
   );
 }
