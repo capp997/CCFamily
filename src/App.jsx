@@ -7,6 +7,15 @@ import Dashboard from "./pages/Dashboard";
 import Navbar from "./components/Navbar";
 import { initGA } from "./analytics";
 
+// Dashboard pages
+import DashboardLayout from "./layouts/DashboardLayout";
+import DashboardHome from "./pages/dashboard/Home";
+import Citas from "./pages/dashboard/Citas";
+import Usuarios from "./pages/dashboard/Usuarios";
+import Clientes from "./pages/dashboard/Clientes";
+import Proyectos from "./pages/dashboard/Proyectos"; // 👈 nueva página
+
+
 export default function App() {
   useEffect(() => {
     initGA("TU_GOOGLE_ANALYTICS_ID"); // reemplaza con tu ID
