@@ -1,15 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../firebase";
+import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
 import {
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-import {
-  Button,
-  TextField,
   Table,
   TableBody,
   TableCell,
@@ -17,6 +9,10 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
+  TextField,
+  Box,
+  Typography,
 } from "@mui/material";
 
 const Proyectos = () => {
@@ -24,83 +20,84 @@ const Proyectos = () => {
   const [nuevoProyecto, setNuevoProyecto] = useState({
     nombre: "",
     descripcion: "",
+    cliente: "",
   });
 
-  // Cargar proyectos desde Firestore
-  const fetchProyectos = async () => {
-    const querySnapshot = await getDocs(collection(db, "proyectos"));
-    const data = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setProyectos(data);
-  };
+  const proyectosCollection = collection(db, "proyectos");
 
+  // Cargar proyectos al iniciar
   useEffect(() => {
+    const fetchProyectos = async () => {
+      const data = await getDocs(proyectosCollection);
+      setProyectos(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    };
     fetchProyectos();
   }, []);
 
-  // Agregar proyecto
+  // Agregar nuevo proyecto
   const agregarProyecto = async () => {
-    if (!nuevoProyecto.nombre || !nuevoProyecto.descripcion) return;
-
-    await addDoc(collection(db, "proyectos"), nuevoProyecto);
-    setNuevoProyecto({ nombre: "", descripcion: "" });
-    fetchProyectos();
+    if (!nuevoProyecto.nombre || !nuevoProyecto.descripcion || !nuevoProyecto.cliente) {
+      alert("Completa todos los campos");
+      return;
+    }
+    const docRef = await addDoc(proyectosCollection, nuevoProyecto);
+    setProyectos([...proyectos, { ...nuevoProyecto, id: docRef.id }]);
+    setNuevoProyecto({ nombre: "", descripcion: "", cliente: "" });
   };
 
   // Eliminar proyecto
   const eliminarProyecto = async (id) => {
     await deleteDoc(doc(db, "proyectos", id));
-    fetchProyectos();
+    setProyectos(proyectos.filter((proy) => proy.id !== id));
   };
 
   return (
-    <div>
-      <h2>Gestión de Proyectos</h2>
+    <Box p={3}>
+      <Typography variant="h4" gutterBottom>
+        Gestión de Proyectos
+      </Typography>
 
-      <div style={{ marginBottom: "1rem" }}>
+      {/* Formulario para agregar proyectos */}
+      <Box mb={3} display="flex" gap={2}>
         <TextField
           label="Nombre del Proyecto"
           value={nuevoProyecto.nombre}
-          onChange={(e) =>
-            setNuevoProyecto({ ...nuevoProyecto, nombre: e.target.value })
-          }
-          style={{ marginRight: "1rem" }}
+          onChange={(e) => setNuevoProyecto({ ...nuevoProyecto, nombre: e.target.value })}
         />
         <TextField
           label="Descripción"
           value={nuevoProyecto.descripcion}
-          onChange={(e) =>
-            setNuevoProyecto({ ...nuevoProyecto, descripcion: e.target.value })
-          }
-          style={{ marginRight: "1rem" }}
+          onChange={(e) => setNuevoProyecto({ ...nuevoProyecto, descripcion: e.target.value })}
         />
-        <Button variant="contained" onClick={agregarProyecto}>
+        <TextField
+          label="Cliente"
+          value={nuevoProyecto.cliente}
+          onChange={(e) => setNuevoProyecto({ ...nuevoProyecto, cliente: e.target.value })}
+        />
+        <Button variant="contained" color="primary" onClick={agregarProyecto}>
           Agregar
         </Button>
-      </div>
+      </Box>
 
+      {/* Tabla de proyectos */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Nombre</TableCell>
               <TableCell>Descripción</TableCell>
+              <TableCell>Cliente</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {proyectos.map((proyecto) => (
-              <TableRow key={proyecto.id}>
-                <TableCell>{proyecto.nombre}</TableCell>
-                <TableCell>{proyecto.descripcion}</TableCell>
+            {proyectos.map((proy) => (
+              <TableRow key={proy.id}>
+                <TableCell>{proy.nombre}</TableCell>
+                <TableCell>{proy.descripcion}</TableCell>
+                <TableCell>{proy.cliente}</TableCell>
                 <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    onClick={() => eliminarProyecto(proyecto.id)}
-                  >
+                  <Button color="error" onClick={() => eliminarProyecto(proy.id)}>
                     Eliminar
                   </Button>
                 </TableCell>
@@ -108,15 +105,15 @@ const Proyectos = () => {
             ))}
             {proyectos.length === 0 && (
               <TableRow>
-                <TableCell colSpan={3} align="center">
-                  No hay proyectos
+                <TableCell colSpan={4} align="center">
+                  No hay proyectos registrados
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </Box>
   );
 };
 
