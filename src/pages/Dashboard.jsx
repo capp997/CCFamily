@@ -4,6 +4,7 @@ import Home from "./dashboard/Home";
 import Citas from "./dashboard/Citas";
 import Usuarios from "./dashboard/Usuarios";
 import Clientes from "./dashboard/Clientes";
+import Proyectos from "./dashboard/Proyectos";
 
 export default function Dashboard() {
   const [pagina, setPagina] = useState("home");
@@ -14,6 +15,7 @@ export default function Dashboard() {
       case "citas": return <Citas />;
       case "usuarios": return <Usuarios />;
       case "clientes": return <Clientes />;
+      case "proyectos": return <Proyectos />;
       default: return <Home />;
     }
   };
@@ -42,6 +44,11 @@ export default function Dashboard() {
           <ListItem disablePadding>
             <ListItemButton onClick={() => setPagina("clientes")}>
               <ListItemText primary="Clientes" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => setPagina("proyectos")}>
+              <ListItemText primary="Proyectos" />
             </ListItemButton>
           </ListItem>
         </List>
